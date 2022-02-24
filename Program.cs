@@ -1,0 +1,15 @@
+﻿using WorkHours;
+using System;
+
+namespace WorkHours
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World!");
+            Payments payments = new Payments();
+            payments.Process();
+        }
+    }
+}
