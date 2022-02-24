@@ -7,7 +7,7 @@ namespace WorkHours
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Starting process...");
             Payments payments = new Payments();
             payments.Process();
         }
