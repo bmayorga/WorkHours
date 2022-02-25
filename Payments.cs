@@ -12,75 +12,77 @@ namespace WorkHours
         string filePath = "c:\\inputfiles\\input.txt";
         public void Process()
         {
-            string line;
-            List<WorkEntry> workEntries = new List<WorkEntry>();
-
-            Console.WriteLine("Processing input file...");
+            // Parse input text file to create work entries
+            Console.WriteLine("Processing input file and calculating payments...");
             StreamReader reader = File.OpenText(filePath);
-            while ((line = reader.ReadLine()) != null)
+            string textLine;
+            while ((textLine = reader.ReadLine()) != null)
             {
-                workEntries.Add(Parse(line));
-            }
+                WorkEntry workEntry = ParseNewEntry(textLine);
 
-            Console.WriteLine("Calculating...");
-            foreach (WorkEntry workEntry in workEntries)
-            {
-                float amount = CalculateEmployee(workEntry);
+                // Calculate payments from work entries
+                double amount = CalculatePayment(workEntry);
                 Console.WriteLine($"The amount to pay {workEntry.Name} is: {amount.ToString("0.00")} USD");
             }
         }
 
-        private WorkEntry Parse(string line)
+        private WorkEntry ParseNewEntry(string line)
         {
+            // Get name
             string[] sections = line.Split('=');
             string name = sections[0];
 
             WorkEntry workEntry = new WorkEntry();
             workEntry.Name = name;
-            workEntry.Intervals = new List<WorkInterval>();
 
+            workEntry.Intervals = new List<WorkInterval>();
             string[] entries = sections[1].Split(',');
+            // Get work entries
             foreach (string entry in entries)
             {
+                // Week day
                 string day = entry.Substring(0, 2);
                 string period = entry.Substring(2);
                 string[] hours = period.Split('-');
 
+                // Initial hour
                 int hour = Convert.ToInt32(hours[0].Substring(0, 2));
                 int min = Convert.ToInt32(hours[0].Substring(3, 2));
                 DateTime iniTime = new DateTime(1, 1, 1, hour, min, 0);
 
+                // End hour
                 hour = Convert.ToInt32(hours[1].Substring(0, 2));
                 min = Convert.ToInt32(hours[1].Substring(3, 2));
                 DateTime endTime = new DateTime(1, 1, 1, hour, min, 0);
 
-                TimeSpan timespan = endTime - iniTime;
-
-                WorkInterval workInterval = new WorkInterval();
-                workInterval.Day = day;
-                workInterval.IniTime = iniTime;
-                workInterval.EndTime = endTime;
-                workInterval.Interval = timespan;
-                workEntry.Intervals.Add(workInterval);
+                workEntry.Intervals.Add(new WorkInterval { Day = day, IniTime = iniTime, EndTime = endTime });
             }
 
             return workEntry;
         }
-        public static float CalculateEmployee(WorkEntry workEntry)
+        public static double CalculatePayment(WorkEntry workEntry)
         {
-            float value = 0;
-            List<HourRate> schedule = HourRates.GetSchedule();
+            double value = 0;
+            // Get schedule and hour rates
+            List<HourRate> schedule = HourRate.GetSchedule();
+
             // Intervals fronm input file
             foreach (WorkInterval interval in workEntry.Intervals)
             {
-                // Hour rates
+                // Pre defined hour rates
                 foreach (HourRate hourRate in schedule)
                 {
-                    if (ScheduleRules.GetDayType(interval.Day) == hourRate.dayType)
+                    // Same day type?
+                    if (interval.GetDayType() == hourRate.IntervalDayType)
                     {
-                        if (interval.IniTime <= hourRate.endTime
-                            || interval.EndTime >= hourRate.iniTime)
-                        { }
+                        // Is it not out of boundaries?
+                        if (!(interval.IniTime > hourRate.EndTime || interval.EndTime < hourRate.IniTime))
+                        {
+                            DateTime earlierEnd = interval.EndTime < hourRate.EndTime ? interval.EndTime : hourRate.EndTime;
+                            DateTime laterStart = interval.IniTime > hourRate.IniTime ? interval.IniTime : hourRate.IniTime;
+                            double minutes = (earlierEnd - laterStart).TotalMinutes;
+                            value += (minutes / 60.0) * hourRate.Rate;
+                        }
                     }
                 }
             }

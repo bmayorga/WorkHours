@@ -11,6 +11,25 @@ namespace WorkHours
         public string Day;
         public DateTime IniTime;
         public DateTime EndTime;
-        public TimeSpan Interval;
+        public DayType GetDayType()
+        {
+            DayType dayType = new DayType();
+            switch (Day)
+            {
+                case "MO":
+                case "TU":
+                case "WE":
+                case "TH":
+                case "FR":
+                    dayType = DayType.weekday;
+                    break;
+
+                case "SA":
+                case "SU":
+                    dayType = DayType.weekend;
+                    break;
+            }
+            return dayType;
+        }
     }
 }
