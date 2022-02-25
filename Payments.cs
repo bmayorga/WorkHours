@@ -25,16 +25,9 @@ namespace WorkHours
             Console.WriteLine("Calculating...");
             foreach (WorkEntry workEntry in workEntries)
             {
-                float amount = Calculate(workEntry);
+                float amount = CalculateEmployee(workEntry);
                 Console.WriteLine($"The amount to pay {workEntry.Name} is: {amount.ToString("0.00")} USD");
             }
-        }
-
-        private float Calculate(WorkEntry workEntry)
-        {
-            float amount = 0;
-
-            return amount;
         }
 
         private WorkEntry Parse(string line)
@@ -72,6 +65,26 @@ namespace WorkHours
             }
 
             return workEntry;
+        }
+        public static float CalculateEmployee(WorkEntry workEntry)
+        {
+            float value = 0;
+            List<HourRate> schedule = HourRates.GetSchedule();
+            // Intervals fronm input file
+            foreach (WorkInterval interval in workEntry.Intervals)
+            {
+                // Hour rates
+                foreach (HourRate hourRate in schedule)
+                {
+                    if (ScheduleRules.GetDayType(interval.Day) == hourRate.dayType)
+                    {
+                        if (interval.IniTime <= hourRate.endTime
+                            || interval.EndTime >= hourRate.iniTime)
+                        { }
+                    }
+                }
+            }
+            return value;
         }
     }
 }
