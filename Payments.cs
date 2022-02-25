@@ -15,12 +15,14 @@ namespace WorkHours
             string line;
             List<WorkEntry> workEntries = new List<WorkEntry>();
 
+            Console.WriteLine("Processing input file...");
             StreamReader reader = File.OpenText(filePath);
             while ((line = reader.ReadLine()) != null)
             {
                 workEntries.Add(Parse(line));
             }
 
+            Console.WriteLine("Calculating...");
             foreach (WorkEntry workEntry in workEntries)
             {
                 float amount = Calculate(workEntry);
