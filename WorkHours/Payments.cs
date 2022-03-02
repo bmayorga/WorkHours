@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace WorkHours
 {
-    class Payments
+    public class Payments
     {
-        string filePath = "c:\\inputfiles\\input.txt";
+        string filePath = "C:\\inputfiles\\input.txt";
         public void Process()
         {
             // Parse input text file to create work entries
@@ -26,7 +26,7 @@ namespace WorkHours
             }
         }
 
-        private static WorkEntry ParseNewEntry(string line)
+        public static WorkEntry ParseNewEntry(string line)
         {
             WorkEntry workEntry = new WorkEntry();
 

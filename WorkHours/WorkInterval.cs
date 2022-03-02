@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WorkHours
 {
-    class WorkInterval
+    public class WorkInterval
     {
         public string Day;
         public DateTime IniTime;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WorkHours
 {
-    class WorkEntry
+    public class WorkEntry
     {
         public string Name { get; set; }
         public List<WorkInterval> Intervals;
