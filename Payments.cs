@@ -26,14 +26,13 @@ namespace WorkHours
             }
         }
 
-        private WorkEntry ParseNewEntry(string line)
+        private static WorkEntry ParseNewEntry(string line)
         {
+            WorkEntry workEntry = new WorkEntry();
+
             // Get name
             string[] sections = line.Split('=');
-            string name = sections[0];
-
-            WorkEntry workEntry = new WorkEntry();
-            workEntry.Name = name;
+            workEntry.Name = sections[0];
 
             workEntry.Intervals = new List<WorkInterval>();
             string[] entries = sections[1].Split(',');
@@ -41,9 +40,8 @@ namespace WorkHours
             foreach (string entry in entries)
             {
                 // Week day
-                string day = entry.Substring(0, 2);
-                string period = entry.Substring(2);
-                string[] hours = period.Split('-');
+                string day = entry.Substring(0, 2); // 2 first chars
+                string[] hours = entry.Substring(2).Split('-'); // from 3rd char 
 
                 // Initial hour
                 int hour = Convert.ToInt32(hours[0].Substring(0, 2));
@@ -75,7 +73,7 @@ namespace WorkHours
                     // Same day type?
                     if (interval.GetDayType() == hourRate.IntervalDayType)
                     {
-                        // Is it not out of boundaries?
+                        // Is it not out of boundaries? Calculate the portion the interval shares with the current hour rate
                         if (!(interval.IniTime > hourRate.EndTime || interval.EndTime < hourRate.IniTime))
                         {
                             DateTime earlierEnd = interval.EndTime < hourRate.EndTime ? interval.EndTime : hourRate.EndTime;

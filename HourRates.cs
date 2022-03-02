@@ -13,7 +13,6 @@ namespace WorkHours
         public DateTime EndTime;
         public DayType IntervalDayType;
         public double Rate;
-
         public static List<HourRate> GetSchedule()
         {
             List<HourRate> list = new List<HourRate>();
@@ -31,7 +30,7 @@ namespace WorkHours
         {
             // 00:00 really means the end of the day?
             // if so, we set end time as 00:00 of next day (day = 2)
-            // to be chronologically correct
+            // to be chronologically correcta and to facilitate time calculations
             HourRate hourRate = new HourRate
             {
                 IntervalDayType = dayType,
@@ -43,7 +42,7 @@ namespace WorkHours
         }
         private static DateTime NewDateTime(int hour, int min, int day = 1)
         {
-            // We create new DateTimes with year=1, month=1, day=1, by default
+            // We create new DateTimes with year = 1, month = 1, day = 1, by default
             return new DateTime(1, 1, day, hour, min, 0);
         }
     }

@@ -13,6 +13,7 @@ namespace WorkHours
         public DateTime EndTime;
         public DayType GetDayType()
         {
+            // Is it weekday or weekend?
             DayType dayType = new DayType();
             switch (Day)
             {
